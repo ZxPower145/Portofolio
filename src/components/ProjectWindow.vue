@@ -1,6 +1,5 @@
 <script>
 import axios from 'axios';
-import { ref, onMounted } from 'vue';
 import ToolBar from "@/components/ToolBar.vue";
 
 export default {
@@ -8,55 +7,56 @@ export default {
   components: { ToolBar },
   props: {
     slug: String,
-    isFolderOpen: Boolean,
-    opacity: Number,
+    isProjectOpen: Boolean,
+    trigger: 0,
   },
   data() {
     return{
-      card: null
+      projectWindow: Element,
+      projectDetail: {},
+      projects: [],
     }
   },
-  setup(props) {
-    const projectData = ref({
-      name: null,
-      slug: null,
-      description: null,
-      gitHub: null,
-      isHosted: null,
-      hostLink: null,
-    });
-
-    onMounted(async () => {
-      try {
-        const response = await axios.get(`/api/v1/projects/`);
-        const project = response.data.find(p => p.slug === props.slug);
-
-        if (project) {
-          projectData.value = {
-            name: project.name,
-            slug: project.slug,
-            description: project.description.replace(/\\n/g, '<br>'),
-            gitHub: project.github,
-            isHosted: project.is_hosted,
-            hostLink: project.host_link,
-          };
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    });
-
-    return {
-      projectData,
-    };
+  watch: {
+    trigger: function (newVal, oldVal) {
+      this.getProjectDetails(this.slug)
+    }
   },
   methods: {
-    closeProjectWindow() {
-      this.card.style.opacity = 0;
+    async getProjects() {
+      this.$store.commit('setIsLoading', true)
+      const response = await axios.get(`/api/v1/projects/`);
+      for (let i = 0; i < response.data.length; i++) {
+        this.projects.push(response.data[i]);
+      }
+      this.$store.commit('setIsLoading', false)
     },
+    getProjectDetails(slug) {
+      if (this.projects.length > 0) {
+        let project = this.projects.find(obj => obj.slug === slug)
+        if (project) {
+          this.projectDetail = {
+            name: project.name,
+            slug: project.slug,
+            description: project.description,
+            github: project.github,
+            hostLink: project.host_link,
+            isHosted: project.is_hosted,
+            isActive: project.is_active,
+          }
+        } else {
+          console.warn('No projects found')
+        }
+      }
+    },
+    close() {
+      this.$emit('close-project', true)
+    }
   },
-  mounted() {
-    this.card = document.getElementById('projectWindow');
+  async mounted() {
+    await this.getProjects();
+    this.projectWindow = document.getElementById('projectWindow')
+    this.getProjectDetails(this.slug)
   }
 };
 </script>
@@ -65,16 +65,20 @@ export default {
   <section class="container" id="projectWindow">
     <div class="card">
       <div class="card-header">
-        <h3 class="title">{{ projectData.name }}</h3>
-        <ToolBar :card="this.card" @close="closeProjectWindow"/>
+        <h3 class="title">{{ projectDetail.name }}</h3>
+        <ToolBar :card="projectWindow" @close-project-window="close()"/>
       </div>
       <div class="card-body" id="card-body">
-        <div class="description" v-html="projectData.description">
+        <div v-if="this.$store.state.isLoading" class="loading-container">
+          <div class="is-loading-bar has-text-centered" v-bind:class="{'is-loading': $store.state.isLoading}">
+            <div class="lds-dual-ring"></div>
+          </div>
         </div>
+        <div class="description" v-else v-html="projectDetail.description"></div>
       </div>
       <div class="card-footer" id="card-footer" style="display: flex; flex-direction: row; gap: 10px">
-        <a :href="projectData.gitHub" target="_blank" class="btn btn-primary">GitHub</a>
-        <a v-if="projectData.isHosted" :href="projectData.hostLink" target="_blank" class="btn btn-primary">Website Link</a>
+        <a :href="projectDetail.gitHub" target="_blank" class="btn btn-primary">GitHub</a>
+        <a v-if="projectDetail.isHosted" :href="projectDetail.hostLink" target="_blank" class="btn btn-primary">Website Link</a>
       </div>
     </div>
   </section>

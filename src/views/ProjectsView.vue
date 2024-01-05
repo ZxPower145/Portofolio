@@ -7,26 +7,40 @@ export default {
   components: {ToolBar, ProjectWindow},
   data() {
     return {
-      slug: null,
+      slug: String,
+      card: Element,
+      projectWindow: Element,
       isFolderOpen: false,
-      card: null,
       isGameOpen: false,
-      projectWindow: null,
+      trigger: 0,
     }
   },
-  methods: {
-    openGame(slug) {
-      this.card.style.opacity = 0;
-      this.slug = slug
-      this.isGameOpen = !this.isGameOpen
-    },
+    methods: {
     openFolder() {
-      this.card.style.opacity = 1;
       this.isFolderOpen = !this.isFolderOpen
+    },
+    setSlug(slug) {
+      this.slug = slug
+      console.log(this.slug)
+      this.trigger += 1
+    },
+    openGame() {
+      this.isGameOpen = true
+      this.projectWindow = document.getElementById('projectWindow')
+    },
+    close(value) {
+      if (value[1] === 'card') {
+        this.isFolderOpen = false
+        console.log('card')
+      }
+    },
+    closeProject() {
+      this.isGameOpen = false
+      console.log('project')
     }
   },
-  mounted() {
-    this.card = document.getElementById('card');
+  async mounted() {
+    this.card = document.getElementById('card')
   }
 };
 </script>
@@ -36,30 +50,35 @@ export default {
     <div v-if="isFolderOpen"><i class="bi bi-folder2-open" @click="openFolder"></i></div>
     <div v-else><i class="bi bi-folder2" @click="openFolder"></i></div>
   </div>
-  <ProjectWindow :slug="this.slug" v-if="isGameOpen"/>
-  <section class="games container" id="card">
+
+  <div class="container" id="card">
     <div class="card" v-if="isFolderOpen">
       <div class="card-header">
         <h3 class="title">Games</h3>
-        <ToolBar :card="card"/>
+        <tool-bar :card="card" :projectWindow="projectWindow" @close-window="close"/>
       </div>
-      <div class="card-body" id="card-body">
+      <div class="card-body">
         <div class="game">
-          <label for="shoot">Shoot The Crow</label>
-          <div id="shoot"><i class="bi bi-bullseye" style="color: red" @click="openGame('shootthecrow')"></i></div>
-        </div>
-        <div class="game">
-          <label for="guess">Guess The Number</label>
-          <div id="guess"><i class="bi bi-patch-question" style="color: green" @click="openGame('guessthenumber')">
-          </i></div>
-        </div>
-        <div class="game">
-          <label for="pig">The Pig Game</label>
-          <div id="pig"><i class="bi bi-dice-5-fill" style="color: mediumpurple" @click="openGame('piggame')"></i></div>
+          <div class="game-container" @click="setSlug('shootthecrow'); openGame()">
+            <div id="shoot"><i class="bi bi-bullseye" style="color: red"></i></div>
+            <label for="shoot">Shoot The Crow</label>
+          </div>
+          <div class="game-container" @click="setSlug('piggame'); openGame()">
+            <div id="pig"><i class="bi bi-dice-5" style="color: darkviolet"></i></div>
+            <label for="pig">The Pig Game</label>
+          </div>
+          <div class="game-container" @click="setSlug('guessthenumber'); openGame()">
+            <div id="guess"><i class="bi bi-patch-question" style="color: green"></i></div>
+            <label for="guess">Guess The Number</label>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+
+    <div id="projectWindow" class="container">
+      <ProjectWindow :slug="slug" :trigger="trigger" v-if="isGameOpen" @close-project="closeProject" class="projectWindow"/>
+    </div>
+  </div>
 </template>
 
 <style lang="scss">
@@ -76,18 +95,39 @@ export default {
     color: white;
   }
   .game {
+    display: flex;
+    flex-direction: row;
+    margin: auto;
     font-size: 30px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .game-container {
     display: flex;
     flex-direction: column;
+    gap: 20px;
+    width: 30%;
+    height: 200px;
+    border: 1px solid black;
+    justify-content: center;
     align-items: center;
+  }
+  .game-container:active {
+    background-color: grey;
+  }
+  .game-container i {
+    font-size: 40px;
   }
   .game label{
     font-size: 20px;
   }
-  .games .card-body {
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    justify-content: center;
+  .projectWindow {
+    position: absolute;
+    width: 1000px;
+    height: 350px;
+    z-index: 3;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 </style>

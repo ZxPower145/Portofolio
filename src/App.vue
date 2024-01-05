@@ -34,6 +34,10 @@
   </div>
   <router-view/>
 
+  <div class="is-loading-bar has-text-centered" v-bind:class="{'is-loading': $store.state.isLoading}">
+    <div class="lds-dual-ring"></div>
+  </div>
+
 </template>
 
 <style lang="scss">
@@ -92,9 +96,11 @@
   }
 
   .container {
-    justify-content: center;
+    height: 100vh;
+    position: relative;
+    display: flex;
+    flex-direction: row;
     align-items: center;
-    flex-direction: column;
   }
 
   .ham {
@@ -155,9 +161,91 @@
     color: $accent;
   }
 
+  .loading-container {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+  }
+  .lds-dual-ring {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-dual-ring:after{
+    content: "";
+    display: block;
+    width: 64px;
+    height: 64px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #ccc;
+    border-color: #ccc transparent #ccc transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+  }
+  @keyframes lds-dual-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  .is-loading-bar {
+    height: 0;
+    overflow: hidden;
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+
+    &.is-loading {
+      height: 80px;
+    }
+  }
+
+  .card-container {
+    min-width: 100%;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    height: 500px;
+    overflow: hidden;
+    -webkit-box-shadow: 0px 4px 45px 0px #000000;
+    box-shadow: 0px 4px 45px 0px #000000;
+  }
+  .card::-webkit-scrollbar {
+    display: none;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  .minimized {
+    position: absolute;
+    height: 60px;
+    transition: all 0.5s;
+    bottom: 0;
+  }
+
   @media (max-width: 700px) {
-   .interactive {
+    .interactive {
       height: 100%;
+    }
+    .card {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      min-width: 100%;
+      height: 400px;
+    }
+    .card-body {
+      overflow-y: auto;
+    }
+    .card-footer {
+      bottom: 0;
     }
   }
 </style>

@@ -1,21 +1,3 @@
-<template>
-  <section class="container">
-    <div class="card" id="card">
-      <div class="card-header">
-        <h6 class="title">WEBDEVELOPER: <span class="secondary">COSTIN BOGDAN</span></h6>
-        <ToolBar :card="this.card"/>
-      </div>
-      <div class="card-body" id="card-body">
-        <h5 class="card-title">{{ mainBio }}</h5>
-        <p class="card-text">{{ secondaryBio }}</p>
-      </div>
-      <div class="card-footer">
-        <router-link to="/contact" class="btn btn-primary">Contact Me</router-link>
-      </div>
-    </div>
-  </section>
-</template>
-
 <script>
 import axios from 'axios';
 import ToolBar from "@/components/ToolBar.vue";
@@ -27,22 +9,25 @@ export default {
   },
   data () {
     return {
+      card: Element,
       mainBio: '',
       secondaryBio: '',
-      card: null,
+      isOpen: true,
     }
   },
   mounted() {
-    this.card = document.getElementById('card');
     this.getBio()
+    this.card = document.getElementById('card')
     document.title = 'Home'
   },
   methods: {
     async getBio() {
+      this.$store.commit('setIsLoading', true)
       try {
         const response = await axios.get('api/v1/profile/1');
         this.mainBio = this.stripHtmlTags(response.data.primary_bio);
         this.secondaryBio = this.stripHtmlTags(response.data.secondary_bio);
+        this.$store.commit('setIsLoading', false)
       } catch (error) {
         console.error('Error fetching bio:', error);
       }
@@ -51,40 +36,57 @@ export default {
       const doc = new DOMParser().parseFromString(html, 'text/html');
       return doc.body.textContent || '';
     },
+    close(value) {
+      this.isOpen = false
+    },
+    open() {
+      this.isOpen = !this.isOpen
+    }
   },
 }
 </script>
 
-<style lang="scss">
+<template>
+  <div class="cv"><i class="bi bi-file-person" @click="open"></i></div>
+  <section class="container">
+    <div class="card-container" id="card">
+      <div class="card" v-if="isOpen">
+        <div class="card-header" id="card-header">
+          <h6 class="title">WEBDEVELOPER: <span class="secondary">COSTIN BOGDAN</span></h6>
+          <ToolBar :card="card" @close-window="close"/>
+        </div>
+        <div class="card-body" id="card-body">
+          <div v-if="this.$store.state.isLoading" class="loading-container">
+            <div class="is-loading-bar has-text-centered" v-bind:class="{'is-loading': $store.state.isLoading}">
+              <div class="lds-dual-ring"></div>
+            </div>
+          </div>
+          <div v-else>
+            <h5 class="card-title"> {{mainBio}} </h5>
+            <p class="card-text">{{secondaryBio}}</p>
+          </div>
+        </div>
+        <div class="card-footer">
+          <router-link to="/contact" class="btn btn-primary">Contact Me</router-link>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+
+<style lang="scss" scoped>
   @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Roboto&display=swap');
   $accent: rgba(0, 79, 158);
 
-  .card {
-    min-width: 100%;
-    overflow: hidden;
-  }
-  .card::-webkit-scrollbar {
-    display: none;
-  }
-  .example {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-  }
-
-  .card-header {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    justify-content: space-between;
-    flex-direction: row;
-  }
-
-  .container {
-    height: 100vh;
-    position: relative;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  .cv {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 45px;
+    color: white;
+    cursor: pointer;
+    z-index: 3;
   }
 
   .secondary {
@@ -94,21 +96,5 @@ export default {
 
   .title {
     font-weight: bold;
-  }
-
-  @media (max-width: 700px) {
-    .card {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      min-width: 100%;
-      height: 400px;
-    }
-    .card-body {
-      overflow-y: auto;
-    }
-    .card-footer {
-      bottom: 0;
-    }
   }
 </style>
