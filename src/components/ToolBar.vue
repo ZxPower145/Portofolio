@@ -2,8 +2,8 @@
   export default {
     name: 'ToolBar',
     props: {
-      card: Object,
-      projectWindow: Object,
+      container: Element,
+      card: undefined,
     },
     data() {
       return {
@@ -11,25 +11,29 @@
       }
     },
     methods: {
-      toggleSize() {
-        if (this.card) {
-          if (this.isMinimized) {
-            this.card.classList.remove('minimized')
-          } else {
-            this.card.classList.add('minimized')
-          }
-          this.isMinimized = !this.isMinimized
+      toggleSize(card, container) {
+        const bar = document.getElementById('minimized')
+        console.log('Container: ', container)
+        this.isMinimized = !this.isMinimized
+        if (this.isMinimized) {
+          card.style.overflow = 'hidden'
+          card.style.height = '50px'
+          card.style.width = '200px'
+          // bar.appendChild(card)
         } else {
-          console.error("Card element not found")
+          card.style.height = 'auto'
+          card.style.width = 'auto'
+          // container.parentNode.appendChild(card)
         }
       },
       close() {
-        this.card.classList.remove('minimized')
-        this.isMinimized = false
-        if (this.card.id === 'card') {
+        if (this.card.id === 'folder-card' || 'card') {
           this.$emit('close-window', [true, 'card'])
         }
         if (this.card.id === 'projectWindow') {
+          this.$emit('close-project-window', [true, 'project'])
+        }
+        else {
           this.$emit('close-project-window', [true, 'project'])
         }
         if (!this.card) {
@@ -42,8 +46,8 @@
 
 <template>
   <div class="toolbar">
-    <h4 v-if="isMinimized" @click="toggleSize" id="maximize" class="bi bi-fullscreen"></h4>
-    <h4 v-else @click="toggleSize" id="minimize" class="bi bi-fullscreen-exit"></h4>
+    <h4 v-if="isMinimized" @click="toggleSize(card, container)" id="maximize" class="bi bi-fullscreen"></h4>
+    <h4 v-else @click="toggleSize(card, container)" id="minimize" class="bi bi-fullscreen-exit"></h4>
     <h4 @click="close" class="bi bi-x-square" style="color: darkred"></h4>
   </div>
 </template>
