@@ -109,6 +109,9 @@
   $offcanvas-horizontal-width: 320px;
   $primary: #0F75D2;
   $accent: rgba(0, 79, 158);
+  $background-header: #4d4c4c;
+  $background-body: #6e6e6e;
+  $background-footer: #4d4c4c;
   :root {
     --bg: 0, 79, 158;
     --color-interactive: 0, 187, 255;
@@ -123,10 +126,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  body {
+  body{
     margin: 0;
     padding: 0;
-    background: #2e2e2e;
+    background: #a3a3a3;
+    overflow: hidden;
   }
   // Nav-Bar
   .ham {
@@ -228,23 +232,25 @@
   }
 
   .container {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     height: 100vh;
     min-width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
   }
   .card {
     position: absolute;
-    display: flex;
-    flex-direction: column;
-    overflow: scroll;
-    background: #2e2e2e;
-    -webkit-box-shadow: 0 4px 45px 0 #000000;
-    box-shadow: 0 4px 45px 0 #000000;
-    width: 30%;
-    height: 40%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: 10% 80% 10%;
+    width: 60%;
+    height: 700px;
+    background: transparent;
+    border: none;
   }
   .card::-webkit-scrollbar,
   .card-body::-webkit-scrollbar{
@@ -254,48 +260,134 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: space-between;
-    text-align: center;
-    cursor: pointer;
-    height: 50px;
-    background: white;
-    border-top-right-radius: 30px;
-    border-top-left-radius: 30px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    background: $background-header;
+    transition: all 1s;
+  }
+
+  .tit {
+    font-size: 25px;
+    flex: 85%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: 1px;
+    word-spacing: -10px;
+    color: white;
+    text-transform: uppercase;
+    background: linear-gradient(
+            135deg, #ff00d2, #fed90f, #00a2ff, #09f1b8,
+            #ff00d2, #fed90f, #00a2ff, #09f1b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-size: 300% 300%;
+    animation: gradientScale 8s infinite;
+  }
+  @keyframes gradientScale {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  .back {
+    display: flex;
+    flex: 5%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0;
+    background: linear-gradient(
+            135deg, #ff00d2, #fed90f, #00a2ff, #09f1b8,
+            #ff00d2, #fed90f, #00a2ff, #09f1b8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -webkit-background-size: 300% 300%;
+    animation: gradientScale 8s infinite;
+  }
+  @keyframes gradientScale {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  .toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 15px;
+    grid-row: 3 / 3;
+    width: 100%;
+    flex: 10%;
+    z-index: 10;
+  }
+  .card-header > h6 {
+    grid-column: span 1;
+    grid-row: span 1;
   }
   .card-body {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow-y: auto;
-    color: white;
+    transition: all 1s ease;
+    display: grid;
+    grid-template-rows: auto auto auto;
+    grid-template-columns: auto;
+    overflow: hidden;
+    grid-row: 2 / 3;
+    padding: 0;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-top: none;
+    border-bottom: none;
+    background: $background-body;
   }
   .card-footer {
-    height: 60px;
-    bottom: 0;
+    display: flex;
+    overflow: hidden;
+    padding: 10px;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    background: $background-footer;
+    align-items: center;
+    grid-row: 3 / 3;
+    //height: 60px;
+    //bottom: 0;
   }
   .card-footer a {
-    font-weight: normal;
+    //font-weight: normal;
   }
 
   // "Folder" Icon
   .side-container {
     position: absolute;
+    top: 5px;
+    right: 10px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
     text-align: center;
-    top: 20px;
-    right: 30px;
+    justify-content: flex-end;
+    align-items: flex-end;
     font-size: 45px;
-    color: white;
+    color: #2e2e2e;
     cursor: pointer;
-    z-index: 3;
+    z-index: 10;
+    margin-right: 10px;
   }
-  .side-container:active {
+  .side-container label {
+    margin-bottom: 15px;
+  }
+  .side-container i:active {
     color: #878787;
   }
-  .side-container:hover {
+  .side-container i:hover {
     opacity: .8;
   }
 
@@ -303,48 +395,17 @@
     z-index: 15;
   }
   .minimized {
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: flex-start;
-    justify-content: flex-start;
-    height: 50px;
-    width: 100%;
-    bottom: 0;
-    background: black;
+    //position: absolute;
+    //display: flex;
+    //flex-direction: row;
+    //align-items: flex-start;
+    //justify-content: flex-start;
+    //justify-content: flex-start;
+    //height: 50px;
+    //width: 100%;
+    //bottom: 0;
+    //background: black;
   }
-
-  //@media screen and (max-width: 1000px) {
-  //  body {
-  //    padding: 50px !important;
-  //    background: blue;
-  //    overflow: hidden !important;
-  //  }
-  //  .interactive {
-  //    height: 100%;
-  //  }
-  //  .container {
-  //    position: absolute;
-  //  }
-  //  .card {
-  //    position: absolute;
-  //    left: 50%;
-  //    right: 50%;
-  //    transform: translate(-50%, -50%);
-  //    display: flex;
-  //    flex-direction: column;
-  //    overflow: hidden;
-  //    max-width: 70%;
-  //    max-height: 200px !important;
-  //  }
-  //  .card-body {
-  //    overflow-y: auto;
-  //  }
-  //  .card-footer {
-  //    bottom: 0;
-  //  }
-  //}
 
   // Vue On-Load Transition
   // Fade

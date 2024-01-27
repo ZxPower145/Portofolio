@@ -19,11 +19,10 @@
       }
     },
     watch: {
-      isOpen: function (newVal, oldVal) {
+      isOpen: function(newVal, oldVal) {
         this.$nextTick(() => {
-          this.card = document.getElementById('card');
-          this.cardBody = this.card.querySelector('.card-body')
-          this.getHeight(this.card)
+          this.card = document.getElementById('contactCard')
+          console.log(this.card)
         })
       }
     },
@@ -63,81 +62,83 @@
 </script>
 
 <template>
-  <div class="side-container"><i class="bi bi-envelope-arrow-up" @click="open"></i></div>
+  <div class="side-container">
+    <div class="folder">
+      <div>
+        <i class="bi bi-envelope-arrow-up" id="contact" @click="open"></i>
+      </div>
+      <label for="contact" style="font-size: 20px">Contact Me</label>
+    </div>
+  </div>
   <section class="container">
     <transition name="fade">
-      <div class="card" v-if="isOpen" id="card">
-        <div class="card-header" id="card-header"
-             @mousedown="dragMouseDown($event, card, true); elementStyle(card, cardBody, 'down')"
-             @mouseup="elementStyle(card, cardBody, 'up')">
-          <h6 class="form-title">GET IN <span class="secondary">TOUCH</span></h6>
+      <div class="card" v-if="isOpen" id="contactCard" ref="contactCard">
+        <div class="card-header" id="card-header" ref="cardHeader"
+             @mousedown="dragMouseDown($event, $refs.contactCard); elementStyle($refs.contactCard, 'down')"
+             @mouseup="elementStyle($refs.contactCard, 'up')">
+          <h6 class="tit" id="title">GET IN TOUCH</h6>
           <ToolBar :card="card" @close-window="close"/>
         </div>
-        <form @submit.prevent="getData">
-          <div class="card-body" id="card-body">
-            <div class="input-container">
+        <form @submit.prevent="getData" class="card-body" id="card-body" ref="cardBody">
+            <div class="input-container" id="name-container">
               <label class="form-label" for="name">Full Name</label>
               <input type="text" class="form-control" name="name" id="name" placeholder="John Doe" required>
             </div>
-            <div class="input-container">
+            <div class="input-container" id="email-container">
               <label class="form-label" for="email">Email Address</label>
               <input type="email" class="form-control" name="email" id="email" placeholder="email@example.com" required>
             </div>
-            <div class="input-container">
+            <div class="input-container" id="message-container">
               <label class="form-label" for="message">Message</label>
               <textarea type="text" class="form-control" name="message" id="message" rows="3" placeholder="Your message" required/>
             </div>
-          </div>
-          <div class="card-footer">
-            <hr>
-            <button class="btn btn-primary">Submit</button>
-          </div>
         </form>
+        <div class="card-footer" ref="cardFooter">
+          <button class="btn btn-outline-primary" data-action="submit">Submit</button>
+        </div>
       </div>
     </transition>
   </section>
 </template>
 
-<style lang="scss">
+<style scoped lang="scss">
   $accent: rgba(0, 79, 158);
-
-
-
-  body, html {
-    overflow: hidden;
-  }
 
   #message {
     height: 150px;
   }
-
-  .form-title {
-    color: black;
-    font-weight: bold;
+  .tit {
+    font-size: 30px;
   }
-  .form-title span {
-    color: $accent;
+  .card-body {
+    overflow-y: auto;
+    justify-items: center;
+    align-items: center;
+    width: 100%;
+    column-width: auto;
   }
-
+  .input-container label {
+    color: white;
+    font-size: 20px;
+  }
   .input-container {
-    margin-bottom: 20px;
+    width: 50%;
   }
-
-  .button-container {
-    margin-top: auto;
+  #name-container, #email-container, #message-container {
+    row-span: 1;
   }
-
-
-  @media (max-width: 700px) {
-    .form-control {
-      width: 100%;
-    }
-    .input-container {
-      margin-bottom: 5px;
-    }
-    #message {
-      height: 100px;
-    }
+  #name-container {
+    grid-row: 1 / 1;
+  }
+  #email-container {
+    grid-row: 2 / 2;
+  }
+  #message-container {
+    grid-row: 3 / 3;
+  }
+  .folder {
+    display: flex;
+    flex-direction: column;
   }
 </style>
 

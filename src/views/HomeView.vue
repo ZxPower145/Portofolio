@@ -16,15 +16,7 @@ export default {
       isOpen: false,
       card: '',
       cardBody: '',
-    }
-  },
-  watch: {
-    isOpen: function (newVal, oldVal) {
-      this.$nextTick(() => {
-        this.card = document.getElementById('card')
-        this.cardBody = this.card.querySelector('.card-body')
-        this.getHeight(this.card)
-      })
+      cardFooter: '',
     }
   },
   methods: {
@@ -54,33 +46,43 @@ export default {
     this.getBio()
     this.isOpen = true
     document.title = 'Home'
+    this.$nextTick(() => {
+      this.card = document.getElementById('card')
+    })
   },
 }
 </script>
 
 <template>
-  <div class="side-container"><i class="bi bi-file-person" @click="open"></i></div>
+  <div class="side-container">
+    <div class="folders">
+      <div>
+        <i class="bi bi-file-person" id="bio" @click="open"></i>
+      </div>
+      <label for="bio" style="font-size: 20px">Bio</label>
+    </div>
+  </div>
   <section class="container">
     <transition name="fade">
-      <div class="card" v-if="isOpen" id="card">
-        <div class="card-header" id="card-header"
-          @mousedown="dragMouseDown($event, card, true); elementStyle(card, cardBody, 'down')"
-          @mouseup="elementStyle(card, cardBody, 'up')">
-          <h6 class="title">WEBDEVELOPER: <span class="secondary">COSTIN BOGDAN</span></h6>
-          <ToolBar :card="card" @close-window="close"/>
+      <div class="card" v-if="isOpen" id="card" ref="card">
+        <div class="card-header" id="card-header" ref="cardHeader"
+          @mousedown="dragMouseDown($event, $refs.card); elementStyle($refs.card, 'down')"
+          @mouseup="elementStyle($refs.card, 'up')">
+          <h6 id="title" class="tit">WEBDEVELOPER: COSTIN BOGDAN</h6>
+          <ToolBar :card="card" @close-window="close" id="toolbar"/>
         </div>
-        <div class="card-body" id="card-body">
+        <div class="card-body" id="card-body" ref="cardBody">
           <div class="loading-container" v-if="this.$store.state.isLoading">
             <div class="is-loading-bar" v-bind:class="{'is-loading': $store.state.isLoading}">
               <div class="lds-dual-ring"></div>
             </div>
           </div>
           <div v-else>
-            <h5 class="main-bio"> {{mainBio}} </h5>
+            <p class="main-bio"> {{mainBio}} </p>
             <p class="secondary-bio">{{secondaryBio}}</p>
           </div>
         </div>
-        <div class="card-footer">
+        <div class="card-footer" id="card-footer" ref="cardFooter">
           <router-link to="/contact" class="btn btn-primary">Contact Me</router-link>
         </div>
       </div>
@@ -90,23 +92,27 @@ export default {
 
 
 <style lang="scss" scoped>
-  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono&family=Roboto&display=swap');
   $accent: rgba(0, 79, 158);
 
   .secondary {
     color: $accent;
     font-weight: bolder;
   }
-
   .main-bio {
-    color: black;
-    font-weight: normal;
-    font-size: 23px;
-  }
-
-  .title {
     font-weight: bold;
-    color: black;
-    font-size: 18px;
+    color: white;
+    font-size: 20px;
+  }
+  .secondary-bio {
+    font-weight: bold;
+    color: lightgrey;
+    font-size: 15px;
+  }
+  .card-body {
+    padding: 10px;
+  }
+  .folders {
+    display: flex;
+    flex-direction: column;
   }
 </style>

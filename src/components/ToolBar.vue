@@ -2,8 +2,8 @@
   export default {
     name: 'ToolBar',
     props: {
-      container: Element,
-      card: undefined,
+      container: '',
+      card: '',
     },
     data() {
       return {
@@ -13,7 +13,6 @@
     methods: {
       toggleSize(card, container) {
         const bar = document.getElementById('minimized')
-        console.log('Container: ', container)
         this.isMinimized = !this.isMinimized
         if (this.isMinimized) {
           card.style.overflow = 'hidden'
@@ -27,16 +26,9 @@
         }
       },
       close() {
-        if (this.card.id === 'folder-card' || 'card') {
+        if (this.card) {
           this.$emit('close-window', [true, 'card'])
-        }
-        if (this.card.id === 'projectWindow') {
-          this.$emit('close-project-window', [true, 'project'])
-        }
-        else {
-          this.$emit('close-project-window', [true, 'project'])
-        }
-        if (!this.card) {
+        } else {
           console.error("Card element not found in close func")
         }
       },
@@ -52,14 +44,12 @@
   </div>
 </template>
 
-<style lang="scss">
-  .toolbar {
-    display: flex;
-    flex-direction: row;
-    margin-left: auto;
-    gap: 20px;
-  }
+<style scoped lang="scss">
   .toolbar h4 {
+    grid-row: 3 / 3;
     cursor: pointer;
+    max-height: 24px;
+    font-weight: bold;
+    margin: 0;
   }
 </style>
