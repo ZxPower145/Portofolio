@@ -1,7 +1,7 @@
 <script>
-import GamesFolder from "@/components/GamesFolder.vue";
-import SitesFolder from "@/components/SitesFolder.vue";
-import NewFolder from "@/components/NewFolder.vue";
+import GamesFolder from "@/components/folders/GamesFolder.vue";
+import SitesFolder from "@/components/folders/SitesFolder.vue";
+import NewFolder from "@/components/folders/NewFolder.vue";
 export default {
   name: 'Projects',
   components: {GamesFolder, SitesFolder, NewFolder},
@@ -63,8 +63,8 @@ export default {
     },
   },
   mounted() {
+    document.title = 'Projects'
     this.container = document.getElementById('container')
-    this.isGameFolderOpen = true
   }
 };
 </script>

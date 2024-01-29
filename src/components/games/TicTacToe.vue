@@ -1,6 +1,11 @@
 <script setup>
 import {ref, computed} from "vue";
 
+const props = defineProps({
+  description: ''
+})
+const playing = ref(false)
+
 const player = ref('X')
 const board = ref([
     [""], [""], [""],
@@ -44,7 +49,7 @@ const resetGame = () => {
 </script>
 
 <template>
-  <main class="text-center">
+  <main class="text-center" v-if="playing">
     <h1 class="tictitle">Tic Tac Toe</h1>
     <h3 class="player" v-if="!winner">Player {{player}}'s turn</h3>
     <h3 class="player" v-else>Player {{winner}} won!</h3>
@@ -61,6 +66,10 @@ const resetGame = () => {
     </div>
     <button class="reset" v-if="winner" @click="resetGame">Reset</button>
   </main>
+  <div v-else class="description">
+    <p v-html="description"></p>
+    <button class="btn btn-primary playBtn" @click="playing = true">Play</button>
+  </div>
 </template>
 
 <style scoped lang="scss">

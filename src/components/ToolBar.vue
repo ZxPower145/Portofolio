@@ -11,20 +11,6 @@
       }
     },
     methods: {
-      toggleSize(card, container) {
-        const bar = document.getElementById('minimized')
-        this.isMinimized = !this.isMinimized
-        if (this.isMinimized) {
-          card.style.overflow = 'hidden'
-          card.style.height = '50px'
-          card.style.width = '200px'
-          // bar.appendChild(card)
-        } else {
-          card.style.height = 'auto'
-          card.style.width = 'auto'
-          // container.parentNode.appendChild(card)
-        }
-      },
       close() {
         if (this.card) {
           this.$emit('close-window', [true, 'card'])
@@ -38,9 +24,7 @@
 
 <template>
   <div class="toolbar">
-    <h4 v-if="isMinimized" @click="toggleSize(card, container)" id="maximize" class="bi bi-fullscreen"></h4>
-    <h4 v-else @click="toggleSize(card, container)" id="minimize" class="bi bi-fullscreen-exit"></h4>
-    <h4 @click="close" class="bi bi-x-square" style="color: darkred"></h4>
+    <h4 @click="close" class="bi bi-x-circle"></h4>
   </div>
 </template>
 
@@ -51,5 +35,6 @@
     max-height: 24px;
     font-weight: bold;
     margin: 0;
+    color: darkred;
   }
 </style>

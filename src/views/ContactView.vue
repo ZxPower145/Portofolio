@@ -12,9 +12,9 @@
       return {
         card: '',
         cardBody: '',
-        name: String,
-        email: String,
-        message: String,
+        name: '',
+        email: '',
+        message: '',
         isOpen: false,
       }
     },
@@ -22,30 +22,39 @@
       isOpen: function(newVal, oldVal) {
         this.$nextTick(() => {
           this.card = document.getElementById('contactCard')
-          console.log(this.card)
         })
       }
     },
     methods: {
-      getData(submitEvent) {
-        this.name = submitEvent.target.elements.name.value
-        this.email = submitEvent.target.elements.email.value
-        this.message = submitEvent.target.elements.message.value.replace(/\r\n|\r|\n/g, '\n');
-        console.log(this.message)
-        this.sendData()
-      },
-      sendData(){
-        axios.post('api/v1/contact/', {
-          name: this.name,
-          email: this.email,
-          message: this.message,
-        })
-            .then(response => {
-              console.log(response)
-            })
-            .catch(error => {
-              console.warn(error)
-            })
+      async sendData(){
+        if (this.message, this.email, this.name !== '' && this.email.includes('@')) {
+          this.$store.commit('setIsLoading', [true, 'contact'])
+          await axios.post('api/v1/contact/', {
+            name: this.name,
+            email: this.email,
+            message: this.message,
+          })
+              .then(response => {
+                console.log(response)
+                this.$store.commit('setIsLoading', [false, 'finished'])
+              })
+              .catch(error => {
+                this.$store.commit('setIsLoading', [false, 'finished'])
+                console.warn(error)
+              })
+        }
+        if (this.name === '') {
+          this.name = 'Please provide a name!'
+        }
+        if (this.email === '') {
+          this.email = 'Please provide a email address!'
+        }
+        if (!this.email.includes('@')) {
+          this.email = 'Please provide a valid email address!'
+        }
+        if (this.message === '') {
+          this.message = 'Please provide a message!'
+        }
       },
       open() {
         this.isOpen = !this.isOpen
@@ -55,7 +64,6 @@
       }
     },
     mounted() {
-      this.isOpen = true
       document.title = 'Contact Me'
     },
   }
@@ -75,26 +83,42 @@
       <div class="card" v-if="isOpen" id="contactCard" ref="contactCard">
         <div class="card-header" id="card-header" ref="cardHeader"
              @mousedown="dragMouseDown($event, $refs.contactCard); elementStyle($refs.contactCard, 'down')"
+             @touchstart="dragMouseDown($event, $refs.contactCard)"
+             @touchmove="elementStyle($refs.contactCard, 'down', true)"
+             @touchend="elementStyle($refs.contactCard, 'up', true)"
              @mouseup="elementStyle($refs.contactCard, 'up')">
           <h6 class="tit" id="title">GET IN TOUCH</h6>
           <ToolBar :card="card" @close-window="close"/>
         </div>
-        <form @submit.prevent="getData" class="card-body" id="card-body" ref="cardBody">
+        <form class="card-body" id="card-body" ref="cardBody">
+          <div v-if="this.$store.state.isLoading[0] && this.$store.state.isLoading[1] === 'contact'">
+            <div class="loading-container">
+              <div class="is-loading-bar" v-bind:class="{'is-loading': $store.state.isLoading}">
+                <div class="lds-dual-ring"></div>
+              </div>
+            </div>
+          </div>
+          <div v-else-if="!this.$store.state.isLoading[0] && this.$store.state.isLoading[1] === ''" class="inputs">
             <div class="input-container" id="name-container">
               <label class="form-label" for="name">Full Name</label>
-              <input type="text" class="form-control" name="name" id="name" placeholder="John Doe" required>
+              <input type="text" class="form-control" name="name" id="name" placeholder="John Doe" required v-model="name">
             </div>
             <div class="input-container" id="email-container">
               <label class="form-label" for="email">Email Address</label>
-              <input type="email" class="form-control" name="email" id="email" placeholder="email@example.com" required>
+              <input type="email" class="form-control" name="email" id="email" placeholder="email@example.com" required v-model="email">
             </div>
             <div class="input-container" id="message-container">
               <label class="form-label" for="message">Message</label>
-              <textarea type="text" class="form-control" name="message" id="message" rows="3" placeholder="Your message" required/>
+              <textarea type="text" class="form-control" name="message" id="message" rows="3" placeholder="Your message" required v-model="message"/>
             </div>
+          </div>
+          <div v-else-if="!this.$store.state.isLoading[0] && this.$store.state.isLoading[1] === 'finished'">
+            <h1 class="success">Thank you for reaching out!.</h1>
+            <h1 class="success">I will make sure to contact you shortly</h1>
+          </div>
         </form>
         <div class="card-footer" ref="cardFooter">
-          <button class="btn btn-outline-primary" data-action="submit">Submit</button>
+          <button class="btn btn-outline-primary" v-if="this.$store.state.isLoading[1] !== 'finished'" @click="sendData">Submit</button>
         </div>
       </div>
     </transition>
@@ -103,6 +127,29 @@
 
 <style scoped lang="scss">
   $accent: rgba(0, 79, 158);
+
+  .inputs {
+    width: 100%;
+    height: 100%;
+    grid-row: span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+  }
+  .success {
+    width: 100%;
+    height: 100%;
+    grid-row: span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: lightgrey;
+  }
 
   #message {
     height: 150px;
@@ -122,7 +169,7 @@
     font-size: 20px;
   }
   .input-container {
-    width: 50%;
+    width: 60%;
   }
   #name-container, #email-container, #message-container {
     row-span: 1;
@@ -139,6 +186,11 @@
   .folder {
     display: flex;
     flex-direction: column;
+  }
+  @media  screen and (max-width: 500px) {
+   .input-container {
+     width: 80%;
+   }
   }
 </style>
 

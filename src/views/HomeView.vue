@@ -14,9 +14,17 @@ export default {
       mainBio: '',
       secondaryBio: '',
       isOpen: false,
-      card: '',
       cardBody: '',
       cardFooter: '',
+      card: '',
+    }
+  },
+  watch: {
+    isOpen: function(newVal, oldVal) {
+      this.$nextTick(() => {
+        this.card = document.getElementById('card')
+        console.log(this.card)
+      })
     }
   },
   methods: {
@@ -24,16 +32,12 @@ export default {
       this.$store.commit('setIsLoading', true)
       try {
         const response = await axios.get('api/v1/profile/1');
-        this.mainBio = this.stripHtmlTags(response.data.primary_bio);
-        this.secondaryBio = this.stripHtmlTags(response.data.secondary_bio);
+        this.mainBio = response.data.primary_bio;
+        this.secondaryBio = response.data.secondary_bio;
         this.$store.commit('setIsLoading', false)
       } catch (error) {
         console.error('Error fetching bio:', error);
       }
-    },
-    stripHtmlTags(html) {
-      const doc = new DOMParser().parseFromString(html, 'text/html');
-      return doc.body.textContent || '';
     },
     close() {
       this.isOpen = false
@@ -43,12 +47,8 @@ export default {
     },
   },
   mounted() {
-    this.getBio()
-    this.isOpen = true
     document.title = 'Home'
-    this.$nextTick(() => {
-      this.card = document.getElementById('card')
-    })
+    this.getBio()
   },
 }
 </script>
@@ -66,7 +66,10 @@ export default {
     <transition name="fade">
       <div class="card" v-if="isOpen" id="card" ref="card">
         <div class="card-header" id="card-header" ref="cardHeader"
-          @mousedown="dragMouseDown($event, $refs.card); elementStyle($refs.card, 'down')"
+          @mousedown="dragMouseDown($event, $refs.card); elementStyle($refs.card, 'down', true)"
+          @touchstart="dragMouseDown($event, $refs.card)"
+          @touchmove="elementStyle($refs.card, 'down',  false,true)"
+          @touchend="elementStyle($refs.card, 'up', false, true)"
           @mouseup="elementStyle($refs.card, 'up')">
           <h6 id="title" class="tit">WEBDEVELOPER: COSTIN BOGDAN</h6>
           <ToolBar :card="card" @close-window="close" id="toolbar"/>
@@ -78,8 +81,8 @@ export default {
             </div>
           </div>
           <div v-else>
-            <p class="main-bio"> {{mainBio}} </p>
-            <p class="secondary-bio">{{secondaryBio}}</p>
+            <p class="main-bio" v-html="mainBio"></p>
+            <p class="secondary-bio" v-html="secondaryBio"></p>
           </div>
         </div>
         <div class="card-footer" id="card-footer" ref="cardFooter">
@@ -114,5 +117,19 @@ export default {
   .folders {
     display: flex;
     flex-direction: column;
+  }
+  @media  screen and (max-width: 500px) {
+    .main-bio {
+      font-size: 15px;
+    }
+    .secondary-bio {
+      font-size: 10px;
+    }
+    .card-body {
+      overflow-y: scroll;
+    }
+    .tit {
+      font-size: 20px;
+    }
   }
 </style>

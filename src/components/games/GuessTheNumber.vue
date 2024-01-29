@@ -1,5 +1,5 @@
 <template>
-  <div class="guess-container">
+  <div class="guess-container" v-if="playing">
     <header>
       <h1>Guess My Number!</h1>
       <div class="number" id="number">?</div>
@@ -9,8 +9,8 @@
         <div class="leftish">
           <input type="number" class="guess" v-model="guess"/>
           <div class="buttons">
-            <button class="btn check" @click="checkGuess()" v-if="!end">Check!</button>
-            <button class="btn" @click="reset">Again!</button>
+            <button class="customBtn check" @click="checkGuess()" v-if="!end">Check!</button>
+            <button class="customBtn" @click="reset">Again!</button>
           </div>
         </div>
       </section>
@@ -23,11 +23,18 @@
       </section>
     </main>
   </div>
+  <div v-else class="description">
+    <p v-html="description"></p>
+    <button class="btn btn-primary playBtn" @click="playing = true">Play</button>
+  </div>
 </template>
 
 <script>
   export default {
     name: 'Guess',
+    props: {
+      description: ''
+    },
     data() {
       return {
         secretNumber: undefined,
@@ -36,6 +43,7 @@
         highscore: 0,
         guess: 0,
         end: false,
+        playing: false,
       }
     },
     watch: {
@@ -110,6 +118,13 @@
 </script>
 
 <style scoped lang="scss">
+  .description {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
   /* LAYOUT */
   .guess-container {
     background-color: #0f331b;
@@ -213,7 +228,7 @@
     z-index: 15;
   }
 
-  .btn {
+  .customBtn {
     border: none;
     background-color: rgb(62, 122, 5);
     color: #222;
@@ -226,7 +241,7 @@
     z-index: 15;
   }
 
-  .btn:hover {
+  .customBtn:hover {
     transition: background-color 0.5s ease;
     background-color: #ccc;
   }

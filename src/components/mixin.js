@@ -1,3 +1,5 @@
+import axios from "axios";
+
 export default {
   data() {
     return {
@@ -10,49 +12,88 @@ export default {
     }
   },
   methods: {
-    moveGameBtn(game, direction) {
+    async getProjects(category) {
+      this.$store.commit('setIsLoading', [true, category])
+      console.log(category)
+      try {
+        const response = await axios.get(`/api/v1/projects/category/${category}`)
+        this.$store.commit('setIsLoading', false)
+        return JSON.parse(JSON.stringify(response.data))
+      } catch (error) {
+        console.error('Error fetching bio:', error);
+      }
+    },
+    getLink(slug) {
+      for (let i = 0; i<= this.projects.length; i++){
+        if (this.projects[i].slug === slug) {
+          if (this.projects[i].github) {
+            return this.projects[i].github.toString()
+          }
+          else {
+            console.error(`The project ${this.projects[i].name} doesn't have a github link!`)
+          }
+        }
+      }
+    },
+    moveElementBtn(element, direction) {
       const cardBody = this.$refs.cardBody
-      const gameFolderCard = this.$refs.card
-      const gameBtn = game.querySelector('.game')
+      const elementFolderCard = this.$refs.card
+      const elementBtn = element.querySelector('.elementBtn')
 
-      gameBtn.style.transition = 'transform 1s cubic-bezier(0.37, 0, 0.63, 1) 0s, ' +
+      elementBtn.style.transition = 'transform 1s cubic-bezier(0.37, 0, 0.63, 1) 0s, ' +
           'background-color 1.5s cubic-bezier(0.37, 0, 0.63, 1) 0s, ' +
           'box-shadow 1.5s cubic-bezier(0.37, 0, 0.63, 1) 0s'
 
       if (direction === 'up') {
         cardBody.style.overflow = 'visible'
-        gameFolderCard.style.overflow = 'visible'
-        game.style.overflow = 'visible'
-        gameBtn.style.transform = 'translateX(300px)'
+        elementFolderCard.style.overflow = 'visible'
+        element.style.overflow = 'visible'
+        elementBtn.style.transform = 'translateX(300px)'
 
-        switch (gameBtn.id.toString()) {
+        switch (elementBtn.id) {
           case 'guess':
-            gameBtn.style.boxShadow = '0 0 30px 5px rgba(10, 202, 112, 1)'
-            gameBtn.style.backgroundColor = 'rgba(0, 73, 49, 0.6)'
+            elementBtn.style.boxShadow = '0 0 30px 5px rgba(10, 202, 112, 1)'
+            elementBtn.style.backgroundColor = 'rgba(0, 73, 49, 0.6)'
             break
-          case 'pig':
-            gameBtn.style.boxShadow = '0 0 30px 5px #f914ff'
-            gameBtn.style.backgroundColor = 'rgba(157, 2, 161, 0.6)'
+          case 'piggame':
+            elementBtn.style.boxShadow = '0 0 30px 5px #f914ff'
+            elementBtn.style.backgroundColor = 'rgba(157, 2, 161, 0.6)'
             break
           case 'tictactoe':
-            gameBtn.style.boxShadow = '0 0 30px 5px rgb(76, 133, 230)'
-            gameBtn.style.backgroundColor = 'rgba(45, 76, 128, 0.6)'
+            elementBtn.style.boxShadow = '0 0 30px 5px rgb(76, 133, 230)'
+            elementBtn.style.backgroundColor = 'rgba(45, 76, 128, 0.6)'
             break
           case 'shoot':
-            gameBtn.style.boxShadow = '0 0 30px 5px rgb(230, 21, 21)'
-            gameBtn.style.backgroundColor = 'rgba(186, 17, 17, 0.6)'
+            elementBtn.style.boxShadow = '0 0 30px 5px rgb(230, 21, 21)'
+            elementBtn.style.backgroundColor = 'rgba(186, 17, 17, 0.6)'
+            break
+          case 'invoice':
+            elementBtn.style.boxShadow = '0 0 30px 5px #8a8130'
+            elementBtn.style.backgroundColor = 'rgba(176, 166, 72, 0.6)'
+            break
+          case 'webstore':
+            elementBtn.style.boxShadow = '0 0 30px 5px #27e669'
+            elementBtn.style.backgroundColor = 'rgba(32, 176, 82, 0.6)'
+            break
+          case 'student':
+            elementBtn.style.boxShadow = '0 0 30px 5px #931be3'
+            elementBtn.style.backgroundColor = 'rgba(103, 16, 161, 0.6)'
+            break
+          case 'chat':
+            elementBtn.style.boxShadow = '0 0 30px 5px #18d6d6'
+            elementBtn.style.backgroundColor = 'rgba(17, 150, 150, 0.6)'
             break
           default:
-            console.error(`We ran out of ${gameBtn}`)
+            console.error(`We ran out of ${elementBtn}`)
         }
       }
       else {
-        gameBtn.style.transform = 'translateX(0)'
-        gameBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
-        gameBtn.style.boxShadow = '0 0 30px 5px black'
+        elementBtn.style.transform = 'translateX(0)'
+        elementBtn.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'
+        elementBtn.style.boxShadow = '0 0 30px 5px black'
       }
     },
-    elementStyle(element, press, isGameOpen) {
+    elementStyle(element, press, isGameOpen, isHome) {
       const cardBody = this.$refs.cardBody
       const cardFooter = this.$refs.cardFooter
       if (press === 'down'){
@@ -76,6 +117,9 @@ export default {
         cardFooter.style.padding = '10px'
         if (!isGameOpen) {
           cardBody.style.padding = '10px'
+        }
+        if (isHome) {
+          cardBody.style.overflow = 'scroll'
         }
       }
     },

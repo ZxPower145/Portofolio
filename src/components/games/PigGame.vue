@@ -1,5 +1,5 @@
 <template>
-  <div class="pig-container">
+  <div class="pig-container" v-if="isPlaying">
     <main>
       <section class="player player--active" id="player-0">
         <h2 class="name">Player 1</h2>
@@ -11,10 +11,10 @@
       </section>
       <section class="interactives">
         <img :src="require(`@/assets/piggame/dice-${diceroll}.png`)" alt="Playing dice" class="dice" />
-        <button class="btn btn--new" @click="reset">🔄 New game</button>
+        <button class="customBtn btn--new" @click="reset">🔄 New game</button>
         <div v-if="playing" class="dice-interact">
-          <button class="btn" @click="roll">🎲 Roll dice</button>
-          <button class="btn" @click="hold">📥 Hold</button>
+          <button class="customBtn" @click="roll">🎲 Roll dice</button>
+          <button class="customBtn" @click="hold">📥 Hold</button>
         </div>
       </section>
       <section class="player" id="player-1">
@@ -27,11 +27,18 @@
       </section>
     </main>
   </div>
+  <div v-else class="description">
+    <p v-html="description"></p>
+    <button class="btn btn-primary playBtn" @click="isPlaying = true">Play</button>
+  </div>
 </template>
 
 <script>
 export default {
   name: 'PigGame',
+  props: {
+    description: '',
+  },
   data() {
     return {
       source: '@/src/assets/piggame/dice-1.png',
@@ -43,6 +50,7 @@ export default {
       winScore: 100,
       activePlayer: 0,
       playing: true,
+      isPlaying: false,
     }
   },
   watch: {
@@ -250,8 +258,7 @@ main {
   font-size: 1rem;
 }
 
-/* ABSOLUTE POSITIONED ELEMENTS */
-.btn {
+.customBtn {
   color: #444;
   background: none;
   border: none;
@@ -270,7 +277,7 @@ main {
   box-shadow: 0 1.75rem 3.5rem rgba(0, 0, 0, 0.1);
 }
 
-.btn::first-letter {
+.customBtn::first-letter {
   font-size: 1.5rem;
 }
 

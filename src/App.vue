@@ -49,6 +49,7 @@
       },
     },
     mounted() {
+      document.title = 'Wrong Turn?'
       const url = document.URL.split('/')
       this.currUrl = url[url.length - 1]
       this.setActive(this.currUrl)
@@ -106,7 +107,7 @@
 </template>
 
 <style lang="scss">
-  $offcanvas-horizontal-width: 320px;
+  $offcanvas-horizontal-width: 300px;
   $primary: #0F75D2;
   $accent: rgba(0, 79, 158);
   $background-header: #4d4c4c;
@@ -114,7 +115,7 @@
   $background-footer: #4d4c4c;
   :root {
     --bg: 0, 79, 158;
-    --color-interactive: 0, 187, 255;
+    --color-interactive: 203, 66, 245;
     --blending: hard-light;
   }
 
@@ -191,9 +192,11 @@
   // Loading
   .loading-container {
     display: flex;
+    grid-row: span 3;
     height: 100%;
-    text-align: center;
+    width: 100%;
     justify-content: center;
+    align-items: center;
     margin: auto;
   }
   .lds-dual-ring {
@@ -250,7 +253,10 @@
     width: 60%;
     height: 700px;
     background: transparent;
-    border: none;
+    border: transparent;
+    border-top-right-radius: 40px;
+    border-top-left-radius: 40px;
+    z-index: 10 !important;
   }
   .card::-webkit-scrollbar,
   .card-body::-webkit-scrollbar{
@@ -263,6 +269,69 @@
     border: 1px solid rgba(0, 0, 0, 0.3);
     background: $background-header;
     transition: all 1s;
+  }
+  .card-header:first-child{
+    border-top-right-radius: 40px;
+    border-top-left-radius: 40px;
+  }
+
+  // Project Element Buttons:
+  .elementThumbImage {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 99px;
+    box-shadow: 0 0 15px 1px black;
+    margin-left: 25px;
+  }
+  .element-selector {
+    grid-row: span 3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 25px;
+  }
+  .element-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    grid-row: span 3;
+  }
+  .elementImage{
+    width: 100%;
+  }
+  .description {
+    width: 100%;
+    grid-row: span 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    color: lightgrey;
+  }
+  .elementBtn {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 90%;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    box-shadow: 0 0 35px 2px black;
+  }
+  .elementBtn .element-label {
+    color: black;
+    text-align: center;
+    width: 100%;
+    height: 30px;
+    font-size: 25px;
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+  .elementWindow {
+    grid-row: span 3;
   }
 
   .tit {
@@ -304,6 +373,7 @@
     justify-content: center;
     font-size: 28px;
     margin: 0;
+    margin-right: 5px;
     background: linear-gradient(
             135deg, #ff00d2, #fed90f, #00a2ff, #09f1b8,
             #ff00d2, #fed90f, #00a2ff, #09f1b8);
@@ -311,17 +381,6 @@
     -webkit-text-fill-color: transparent;
     -webkit-background-size: 300% 300%;
     animation: gradientScale 8s infinite;
-  }
-  @keyframes gradientScale {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
   }
   .toolbar {
     display: flex;
@@ -358,13 +417,7 @@
     background: $background-footer;
     align-items: center;
     grid-row: 3 / 3;
-    //height: 60px;
-    //bottom: 0;
   }
-  .card-footer a {
-    //font-weight: normal;
-  }
-
   // "Folder" Icon
   .side-container {
     position: absolute;
@@ -378,7 +431,7 @@
     font-size: 45px;
     color: #2e2e2e;
     cursor: pointer;
-    z-index: 10;
+    z-index: 4;
     margin-right: 10px;
   }
   .side-container label {
@@ -390,78 +443,61 @@
   .side-container i:hover {
     opacity: .8;
   }
-
   .isOnTop {
     z-index: 15;
   }
-  .minimized {
-    //position: absolute;
-    //display: flex;
-    //flex-direction: row;
-    //align-items: flex-start;
-    //justify-content: flex-start;
-    //justify-content: flex-start;
-    //height: 50px;
-    //width: 100%;
-    //bottom: 0;
-    //background: black;
-  }
 
   // Vue On-Load Transition
-  // Fade
-  .fade-enter-from {
+
+  .fade-enter-from,
+  .fade-leave-to{
     opacity: 0;
-    top: -30%;
-    left: 50%;
-    transform: translate(-50%, 30%) scale(0.1);
+    top: -100%;
+    left: -100%;
+    transform: translate(-100%, -100) scale(0.1);
   }
   .fade-enter-active,
   .fade-leave-active {
-    transition: all 1.5s ease-in-out;
+    transition: all 1s;
   }
-  .fade-leave-to{
-    opacity: 0;
-    top: -30%;
-    left: 50%;
-    transform: translate(-50%, -130%) scale(0.1);
-  }
-
-  // Card
-  .proj-enter-from {
-    opacity: 0;
-    top: -30%;
-    left: 50%;
-    transform: translate(-50%, 30%) scale(0,1);
-  }
-  .proj-enter-to {
-    opacity: 1;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -30%) scale(1);
-  }
-  .proj-enter-active{
-    -webkit-transition: all 1s ease;
-    -moz-transition: all 1s ease;
-    -ms-transition: all 1s ease;
-    -o-transition: all 1s ease;
-    transition: all 1s ease;
-  }
-  .proj-leave-from{
-    opacity: 1;
-    transform: scale(1);
-  }
-  .proj-leave-to{
-    opacity: 0;
-    top: -30%;
-    left: 50%;
-    transform: translate(-50%, 30%) scale(0);
-  }
-  .proj-leave-active{
-    -webkit-transition: all 1s ease;
-    -moz-transition: all 1s ease;
-    -ms-transition: all 1s ease;
-    -o-transition: all 1s ease;
-    transition: all 1s ease;
+  
+  @media  screen and (max-width: 500px) {
+    .container {
+      position: absolute !important;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100% !important;
+      height: 100% !important;
+    }
+    body, html {
+      width: 100%;
+      height: 100%;
+    }
+    .card {
+      width: 90%;
+      height: 90%;
+      z-index: 13;
+    }
+    .card-body {
+      overflow-y: scroll !important;
+    }
+    .playBtn {
+      display: none;
+    }
+    .element-label {
+      font-size: 20px !important;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .side-container {
+      right: 0;
+      font-size: 30px;
+    }
+    .side-container label {
+      font-size: 20px;
+    }
   }
 </style>
 
