@@ -1,6 +1,6 @@
 <script>
-import mixin from "@/components/mixin";
-import ToolBar from "@/components/ToolBar.vue";
+import mixin from "@/components/mixins/mixin";
+import ToolBar from "@/components/mixins/ToolBar.vue";
 export default {
   name: 'SitesFolder',
   mixins: [mixin],
@@ -8,7 +8,6 @@ export default {
   data() {
     return {
       newCard: Element,
-      container: Element,
       openedSite: '',
       isSiteOpen: false,
       title: 'New Folder',
@@ -60,7 +59,6 @@ export default {
   async mounted() {
     await this.$nextTick(() => {
       this.newCard = document.getElementById('newFolder')
-      this.container = document.getElementById('container')
     })
     this.projects = await this.getProjects('app')
   }
@@ -77,7 +75,7 @@ export default {
        @mouseup="elementStyle($refs.card, 'up', isSiteOpen)">
       <div v-if="openedSite !== ''" class="back" @click="back"><i class="bi bi-arrow-left-circle"></i></div>
       <h6 class="tit" id="title">{{title}}</h6>
-      <tool-bar class="toolbar" id="toolbar" :card="newCard" :container="container" @close-window="close"/>
+      <tool-bar class="toolbar" id="toolbar" :card="newCard" @close-window="close"/>
     </div>
     <div class="card-body" id="card-body" ref="cardBody">
       <div class="loading-container" v-if="this.$store.state.isLoading[0] && this.$store.state.isLoading[1] === 'app'">
@@ -91,18 +89,18 @@ export default {
             @mouseover="moveElementBtn($refs[project.slug][0], 'up')"
             @mouseleave="moveElementBtn($refs[project.slug][0], 'down')">
             <div class="elementBtn" :id="project.slug" @click="openSite(project.slug.toString(), true)">
-              <img :src="require(`@/assets/thumbnails/${project.slug.toLowerCase()}.png`)" :alt="project.slug"
+              <img :src="project.get_thumbnail" :alt="project.slug"
                    class="elementThumbImage"/>
               <label :for="project.slug" class="element-label">{{project.name}}</label>
             </div>
           </div>
           <div v-else>
             <div v-if="project.slug === openedSite" class="description">
-              <div v-if="!preview">
+              <div v-if="!preview" class="description">
                 <p v-html="project.description"></p>
                 <button class="btn btn-primary playBtn" @click="preview = true">See Preview</button>
               </div>
-              <div v-else>PREVIEW</div>
+              <img v-else :src="project.get_preview"/>
             </div>
           </div>
         </div>

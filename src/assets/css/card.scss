@@ -1,0 +1,122 @@
+$background-header: #4d4c4c;
+$background-body: #6e6e6e;
+$background-footer: #4d4c4c;
+
+.card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: 10% 80% 10%;
+  width: 60%;
+  height: 700px;
+  background: transparent;
+  border: transparent;
+  border-top-right-radius: 40px;
+  border-top-left-radius: 40px;
+  z-index: 9 ;
+}
+.card::-webkit-scrollbar,
+.card-body::-webkit-scrollbar{
+  display: none;
+}
+.card-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background: $background-header;
+  transition: all 1s;
+  cursor: move;
+}
+.card-header:first-child{
+  border-top-right-radius: 40px;
+  border-top-left-radius: 40px;
+}
+.card-header > h6 {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+.card-body {
+  transition: all 1s ease;
+  display: grid;
+  grid-template-rows: auto auto auto;
+  grid-template-columns: auto;
+  overflow: hidden;
+  grid-row: 2 / 3;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  border-top: none;
+  border-bottom: none;
+  background: $background-body;
+}
+.card-footer {
+  display: flex;
+  overflow: hidden;
+  padding: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.3);
+  background: $background-footer;
+  align-items: center;
+  grid-row: 3 / 3;
+}
+
+.tit {
+  font-size: 25px;
+  flex: 85%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: 1px;
+  word-spacing: -10px;
+  color: white;
+  text-transform: uppercase;
+  background: linear-gradient(
+          135deg, #ff00d2, #fed90f, #00a2ff, #09f1b8,
+          #ff00d2, #fed90f, #00a2ff, #09f1b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-size: 300% 300%;
+  animation: gradientScale 8s infinite;
+}
+@keyframes gradientScale {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+.back {
+  display: flex;
+  flex: 5%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin: 0;
+  margin-right: 5px;
+  background: linear-gradient(
+          135deg, #ff00d2, #fed90f, #00a2ff, #09f1b8,
+          #ff00d2, #fed90f, #00a2ff, #09f1b8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-size: 300% 300%;
+  animation: gradientScale 8s infinite;
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  grid-row: 3 / 3;
+  width: 100%;
+  flex: 10%;
+  z-index: 10;
+}

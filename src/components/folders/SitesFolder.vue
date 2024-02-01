@@ -1,6 +1,6 @@
 <script>
-import mixin from "@/components/mixin";
-import ToolBar from "@/components/ToolBar.vue";
+import mixin from "@/components/mixins/mixin";
+import ToolBar from "@/components/mixins/ToolBar.vue";
 export default {
   name: 'SitesFolder',
   mixins: [mixin],
@@ -8,7 +8,6 @@ export default {
   data() {
     return {
       sitesCard: Element,
-      container: Element,
       openedSite: '',
       isSiteOpen: false,
       title: 'Websites',
@@ -56,7 +55,6 @@ export default {
   async mounted() {
      await this.$nextTick(() => {
       this.sitesCard = document.getElementById('sitesFolder')
-      this.container = document.getElementById('container')
     })
     this.projects = await this.getProjects('website')
   }
@@ -73,7 +71,7 @@ export default {
        @mouseup="elementStyle($refs.card, 'up', isSiteOpen, true)">
       <div v-if="openedSite !== ''" class="back" @click="openSite('')"><i class="bi bi-arrow-left-circle"></i></div>
       <h6 class="tit" id="title">{{title}}</h6>
-      <tool-bar class="toolbar" id="toolbar" :card="sitesCard" :container="container" @close-window="close"/>
+      <tool-bar class="toolbar" id="toolbar" :card="sitesCard" @close-window="close"/>
     </div>
     <div class="card-body" id="card-body" ref="cardBody">
       <div class="loading-container" v-if="this.$store.state.isLoading[0] && this.$store.state.isLoading[1] === 'website'">
@@ -87,26 +85,19 @@ export default {
             @mouseover="moveElementBtn($refs[project.slug][0], 'up')"
             @mouseleave="moveElementBtn($refs[project.slug][0], 'down')">
             <div class="elementBtn" :id="project.slug" @click="openSite(project.slug.toString())">
-                <img :src="require(`@/assets/thumbnails/${project.slug.toLowerCase()}.png`)" :alt="project.slug"
+                <img :src="project.get_thumbnail" :alt="project.slug"
                      class="elementThumbImage"/>
               <label :for="project.slug" class="element-label">{{project.name}}</label>
             </div>
           </div>
         </div>
       </div>
-      <div class="description" v-if="openedSite === 'invoice'">
-        <div v-if="!seePreview">
+      <div class="description" v-if="openedSite">
+        <div v-if="!seePreview" class="description">
           <p v-html="currOpen.description"></p>
           <button class="btn btn-primary playBtn" @click="seePreview = true">See Preview</button>
         </div>
-        <img v-else src="@/assets/preview/invoiceManager.png" class="elementImage">
-      </div>
-      <div class="description" v-else-if="openedSite === 'webstore'">
-        <div v-if="!seePreview">
-          <p v-html="currOpen.description"></p>
-          <button class="btn btn-primary playBtn" @click="seePreview = true">See Preview</button>
-        </div>
-        <img v-else src="@/assets/preview/shop.png" class="elementImage">
+        <img v-else :src="currOpen.get_preview" class="elementImage">
       </div>
     </div>
     <div class="card-footer" id="card-footer" ref="cardFooter">

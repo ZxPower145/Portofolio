@@ -1,0 +1,100 @@
+.ham {
+  position: absolute;
+  left: 5px;
+  top: 5px;
+  z-index: 5;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 30px;
+}
+.nav {
+  transition: all 1s;
+  position: absolute;
+  left: 0;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5rem);
+  height: 100%;
+  width: 350px;
+  display: grid;
+  grid-template-rows: 10% auto;
+  z-index: 1045;
+  border-right: rgba(51, 50, 50, 0.4) 1px solid;
+  border-bottom: rgba(51, 50, 50, 0.4) 1px solid;
+}
+.nav-closed {
+  transform: translateX(-100%);
+}
+.nav-open {
+  transform: translateX(0);
+}
+.nav-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  border-bottom: rgba(51, 50, 50, 0.4) 1px solid;
+}
+.nav-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+.nav-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  text-transform: uppercase;
+  font-size: 40px;
+  margin: 0
+}
+.navLink {
+  transition: all 1s;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80%;
+  height: 25%;
+  color: white;
+  background: rgba(30, 30, 30, 0.5);
+  border-radius: 30px;
+  backdrop-filter: blur(7.1px);
+  -webkit-backdrop-filter: blur(7.1px);
+  border: 1px solid rgba(30, 30, 30, 0.48);
+  text-transform: uppercase;
+  //text-align: center;
+  font-size: 60px;
+}
+.navLink:hover,
+.navLink:active,
+.navLink:focus{
+  //color: transparent;
+  box-shadow: 0 2px 20px black;
+  scale: (1);
+  font-size: 70px;
+}
+.navLink:focus{
+  color: deepskyblue;
+}
+.active-link {
+  color: deepskyblue;
+}
+
+@media screen and (max-width: 500px) {
+  .nav {
+    width: 200px;
+  }
+  .nav-title {
+    font-size: 25px;
+  }
+  .navLink {
+    height: 20%;
+  }
+}

@@ -1,0 +1,33 @@
+.side-container {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: flex-end;
+  align-items: flex-end;
+  font-size: 45px;
+  color:
+#ba423a
+;
+  margin-right: 10px;
+  z-index: 2;
+}
+.folder {
+  display: flex;
+  flex-direction: column;
+}
+.side-container .folders {
+  cursor: pointer;
+}
+.side-container label {
+  color: black;
+  margin-bottom: 15px;
+}
+.side-container i:active {
+  color: #878787;
+}
+.side-container i:hover {
+  opacity: .8;
+}

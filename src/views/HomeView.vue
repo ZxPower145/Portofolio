@@ -1,7 +1,7 @@
 <script>
 import axios from 'axios';
-import ToolBar from "@/components/ToolBar.vue";
-import mixin from "@/components/mixin";
+import ToolBar from "@/components/mixins/ToolBar.vue";
+import mixin from "@/components/mixins/mixin";
 axios.defaults.baseURL = 'http://localhost:8000';
 export default {
   name: 'Home',
@@ -56,9 +56,7 @@ export default {
 <template>
   <div class="side-container">
     <div class="folders">
-      <div>
-        <i class="bi bi-file-person" id="bio" @click="open"></i>
-      </div>
+      <i class="bi bi-file-person" id="bio" @click="open"></i>
       <label for="bio" style="font-size: 20px">Bio</label>
     </div>
   </div>
@@ -129,7 +127,7 @@ export default {
       overflow-y: scroll;
     }
     .tit {
-      font-size: 20px;
+      font-size: 15px;
     }
   }
 </style>

@@ -3,6 +3,7 @@ export default {
   name: "ShootTheCrow",
   props: {
     description: '',
+    preview: '',
   },
   data() {
     return {
@@ -18,7 +19,7 @@ export default {
     <button class="btn btn-primary playBtn" @click="seePreview = true">See Preview</button>
   </div>
   <div v-else>
-    <img src="@/assets/preview/shootthecrowimg.png" class="elementImage">
+    <img :src="preview" class="elementImage">
   </div>
 </template>
 

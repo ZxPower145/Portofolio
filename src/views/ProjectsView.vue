@@ -18,7 +18,6 @@ export default {
   methods: {
     openGameFolder() {
       this.isGameFolderOpen = !this.isGameFolderOpen
-      // this.gameOpen = ''
       this.$nextTick(() => {
         this.setActive('gamesFolder')
         this.gameFolderCard = document.getElementById('gamesFolder')
@@ -64,32 +63,11 @@ export default {
   },
   mounted() {
     document.title = 'Projects'
-    this.container = document.getElementById('container')
   }
 };
 </script>
 
 <template>
-  <section class="side-container">
-    <div class="folders">
-      <div id="game-folder" @click="openGameFolder">
-        <div v-if="isGameFolderOpen"><i class="bi bi-folder2-open"></i></div>
-        <div v-else><i class="bi bi-folder2"></i></div>
-        <label for="game-folder" style="font-size: 20px">Games</label>
-      </div>
-      <div id="site-folder" @click="openSitesFolder">
-        <div v-if="isSiteFolderOpen"><i class="bi bi-folder2-open"></i></div>
-        <div v-else><i class="bi bi-folder2"></i></div>
-        <label for="site-folder" style="font-size: 20px">Websites</label>
-      </div>
-      <div id="new-folder" @click="openNewFolder">
-        <div v-if="isNewOpen"><i class="bi bi-folder2-open"></i></div>
-        <div v-else><i class="bi bi-folder2"></i></div>
-        <label for="new-folder" style="font-size: 20px">New Folder</label>
-      </div>
-    </div>
-  </section>
-
   <section class="container" id="container">
     <transition-group name="fade">
       <GamesFolder v-if="isGameFolderOpen"
@@ -105,24 +83,31 @@ export default {
                    :class="'window'"
                    :id="'sitesFolder'"/>
       <NewFolder v-if="isNewOpen"
-        @close-new-window="close"
-        @mousedown="setActive('newFolder')"
-        @touchstart="setActive('newFolder')"
-        :class="'window'"
-        :id="'newFolder'"/>
+                   @close-new-window="close"
+                   @mousedown="setActive('newFolder')"
+                   @touchstart="setActive('newFolder')"
+                   :class="'window'"
+                   :id="'newFolder'"/>
     </transition-group>
   </section>
-</template>
 
-<style lang="scss" scoped>
-  .bi {
-    color: #946c21
-  }
-  .side-container label{
-    color: black;
-  }
-  #game-folder, #site-folder, #new-folder {
-    display: flex;
-    flex-direction: column;
-  }
-</style>
+  <div class="side-container" id="side-container">
+    <div class="folders">
+      <div id="game-folder" class="folder" @click="openGameFolder">
+        <div class="icon" v-if="isGameFolderOpen"><i class="bi bi-folder2-open"></i></div>
+        <div class="icon" v-else><i class="bi bi-folder2"></i></div>
+        <label for="game-folder" style="font-size: 20px">Games</label>
+      </div>
+      <div id="site-folder" class="folder" @click="openSitesFolder">
+        <div class="icon" v-if="isSiteFolderOpen"><i class="bi bi-folder2-open"></i></div>
+        <div class="icon" v-else><i class="bi bi-folder2"></i></div>
+        <label for="site-folder" style="font-size: 20px">Websites</label>
+      </div>
+      <div id="new-folder" class="folder" @click="openNewFolder">
+        <div class="icon" v-if="isNewOpen"><i class="bi bi-folder2-open"></i></div>
+        <div class="icon" v-else><i class="bi bi-folder2"></i></div>
+        <label for="new-folder" style="font-size: 20px">New Folder</label>
+      </div>
+    </div>
+  </div>
+</template>

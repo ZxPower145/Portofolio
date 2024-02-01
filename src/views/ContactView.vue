@@ -1,7 +1,7 @@
 <script>
   import axios from "axios";
-  import ToolBar from "@/components/ToolBar.vue";
-  import mixin from "@/components/mixin";
+  import ToolBar from "@/components/mixins/ToolBar.vue";
+  import mixin from "@/components/mixins/mixin";
   export default {
     name: 'Contact',
     mixins: [mixin],
@@ -98,7 +98,7 @@
               </div>
             </div>
           </div>
-          <div v-else-if="!this.$store.state.isLoading[0] && this.$store.state.isLoading[1] === ''" class="inputs">
+          <div v-else-if="!this.$store.state.isLoading[0]" class="inputs">
             <div class="input-container" id="name-container">
               <label class="form-label" for="name">Full Name</label>
               <input type="text" class="form-control" name="name" id="name" placeholder="John Doe" required v-model="name">
@@ -113,8 +113,8 @@
             </div>
           </div>
           <div v-else-if="!this.$store.state.isLoading[0] && this.$store.state.isLoading[1] === 'finished'">
-            <h1 class="success">Thank you for reaching out!.</h1>
-            <h1 class="success">I will make sure to contact you shortly</h1>
+            <h1 class="success">Thank you for reaching out!</h1>
+            <h1 class="success">I will make sure to contact you shortly.</h1>
           </div>
         </form>
         <div class="card-footer" ref="cardFooter">

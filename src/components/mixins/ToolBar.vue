@@ -2,13 +2,7 @@
   export default {
     name: 'ToolBar',
     props: {
-      container: '',
       card: '',
-    },
-    data() {
-      return {
-        isMinimized: false,
-      }
     },
     methods: {
       close() {
