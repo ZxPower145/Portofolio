@@ -1,4 +1,6 @@
-# portofolio_vue
+# Portofolio
+
+https://costinbogdan.eu
 
 ## Project setup
 ```
